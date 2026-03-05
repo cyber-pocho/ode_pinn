@@ -10,7 +10,7 @@ class PINN(nn.Module):
         hidden_dim: Width of the hidden layer
         num_layers: Number of hidden layers
     """
-    def __init__(self, input_dim: int = 1, output_dim int=1, hidden_dim: int=64, num_layers: int=4):
+    def __init__(self, input_dim: int = 1, output_dim: int=1, hidden_dim: int=64, num_layers: int=4):
         super().__init__()
         layers = [nn.Linear(input_dim, hidden_dim), nn.Tanh()]
         for _ in range(num_layers-1):
