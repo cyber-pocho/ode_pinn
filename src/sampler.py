@@ -21,7 +21,7 @@ def random_sampler(n_points:int, domain:tuple, device:str="cpu") -> torch.Tensor
     """
     x_min, x_max = domain
     x = torch.FloatTensor(n_points, 1).uniform_(x_min, x_max).to(device)
-    x.requires_grad(True)
+    x.requires_grad_(True)
     return x
 def latin_hypercube_sampler(n_points: int, domain:tuple, device: str="cpu")->torch.Tensor: 
     """

@@ -9,8 +9,8 @@ Standard for PINN literature
 import torch
 from tqdm import tqdm 
 from typing import Callable
-from losses import total_loss
-from sampler import random_sampler
+from src.losses import total_loss
+from src.sampler import random_sampler
 
 class PINNTrainer: 
     """
@@ -26,7 +26,7 @@ class PINNTrainer:
         device:      'cpu' or 'cuda'
 
     """
-    def __init__(self, model: torch.nn.Module, ode_fn: Callable, bc_points: tuple(-2.0, 2.0), n_colloc: int=100, lambda_bc: float=10.0, device: str="cpu"): 
+    def __init__(self, model: torch.nn.Module, ode_fn: Callable, bc_points: list, domain: tuple = (-2.0, 2.0), n_colloc: int=1000, lambda_bc: float=10.0, device: str="cpu"): 
         self.model=model.to(device)
         self.ode_fn=ode_fn
         self.bc_points=[(x.to(device), y.to(device)) for x, y in bc_points]
@@ -56,7 +56,7 @@ class PINNTrainer:
         pbar=tqdm(range(epochs), desc="Adam", ncols=80)
         for epoch in pbar: 
             optimizer.zero_grad()
-            l_total, l_ode, l_bc, self._step()
+            l_total, l_ode, l_bc= self._step()
             l_total.backward()
             optimizer.step()
             scheduler.step()

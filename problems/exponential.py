@@ -10,4 +10,4 @@ def boundary_conditions() -> list:
     y_bc=torch.tensor([[1.0]], dtype=torch.float32)
     return [(x_bc, y_bc)]
 def exact_solution(x:np.ndarray)->np.ndarray:
-    return: np.exp(-x**2)
+    return np.exp(-x**2)
