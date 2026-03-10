@@ -4,16 +4,16 @@ import matplotlib.pyplot as plt
 import os
 
 def plot_solution(
-        model: torch.nn.Module, 
-        exact_fn, 
-        domain: tuple=(-2.0,2.0), 
-        n_plot: int=500, 
+        model: torch.nn.Module,
+        exact_fn,
+        domain: tuple=(-2.0,2.0),
+        n_plot: int=500,
         save_dir: str="results",
         title: str="PINN solution",
-        ): 
+        ):
     """
     Plot the PINN solution vs the exact analytical solution
-    Args: 
+    Args:
         model: Trained PINN
         exact_fn: Function x - Exact
         domain: (x_min, x_max)
@@ -24,7 +24,7 @@ def plot_solution(
     os.makedirs(save_dir, exist_ok=True)
     x_np=np.linspace(domain[0], domain[1], n_plot)
     x_t=torch.tensor(x_np, dtype=torch.float32).unsqueeze(1)
-    
+
     model.eval()
     with torch.no_grad():
         y_pred = model(x_t).squeeze().numpy()
@@ -32,7 +32,7 @@ def plot_solution(
 
     y_exact = exact_fn(x_np)
     error = np.abs(y_pred - y_exact)
-    fig, axes = plt.subplots(1, 2, figsize(14, 4))
+    fig, axes = plt.subplots(1, 2, figsize=(14, 4))
 
     #solution
     ax=axes[0]
@@ -40,7 +40,7 @@ def plot_solution(
     ax.plot(x_np, y_pred, "r--", linewidth=1.0, label="Predicted solution")
     ax.set_xlabel("$x$", fontsize=11)
     ax.set_ylabel("$y$", fontsize=11)
-    ax.set_title("Solution", fontsize-14)
+    ax.set_title("Solution", fontsize=14)
     ax.legend(fontsize=11)
     ax.grid(True, alpha=0.3)
 
@@ -53,11 +53,11 @@ def plot_solution(
     ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    path=ps.path.join(save_dir, "solution.png")
+    path=os.path.join(save_dir, "solution.png")
     plt.savefig(path, dpi=300, bbox_inches="tight")
     plt.show()
 
-def plot_loss_history(history:dict, save_dir:str="results"): 
+def plot_loss_history(history:dict, save_dir:str="results"):
     """
     Plot training loss curves on a log scale
     """
@@ -78,29 +78,29 @@ def plot_loss_history(history:dict, save_dir:str="results"):
     plt.show()
 
 def compute_metrics(
-        model: torch.nn.Module, 
-        exact_fn, 
-        domain: tuple=(-2.0, 2.0), 
-        n_points: int=1000, 
+        model: torch.nn.Module,
+        exact_fn,
+        domain: tuple=(-2.0, 2.0),
+        n_points: int=1000,
         )-> dict:
     """
-    Compute accuracy metrics against the exact solution. 
-    Returns: 
+    Compute accuracy metrics against the exact solution.
+    Returns:
         Dict with max_abs_error, mean_abs_error, l2_relative_error
     """
     x_np=np.linspace(domain[0], domain[1], n_points)
     x_t=torch.tensor(x_np, dtype=torch.float32).unsqueeze(1)
 
     model.eval()
-    with torch.no_grad(): 
+    with torch.no_grad():
         y_pred=model(x_t).squeeze().numpy()
     model.train()
 
     y_exact=exact_fn(x_np)
     error=np.abs(y_pred-y_exact)
     metrics={
-            "max_abs_error": float(error.max()), 
-            "mean_abs_error": float(error.mean()), 
+            "max_abs_error": float(error.max()),
+            "mean_abs_error": float(error.mean()),
             "l2_relative_error": float(
                 np.linalg.norm(y_pred-y_exact)/np.linalg.norm(y_exact)
                 ),
